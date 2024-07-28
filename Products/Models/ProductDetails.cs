@@ -12,7 +12,7 @@ namespace Products.Models
         //[ForeignKey("Product")]
         public int Products_Id { get; set; }
         [Required]
-        public string Images { get; set; }
+        public string? Images { get; set; }
         [Required]
         public string Color { get; set; }
         [Required]
