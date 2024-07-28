@@ -4,9 +4,97 @@
 
 @model Product
 
+<div class="modal" tabindex="-1" id="update">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تأكيد  تعديل  </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Update" method="post">
+                    <input type="hidden" id="Id" name="Id" class="form-control" />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="" class="form-label">اسم المنتج</label>
+                            <input type="text" id="Name" name="Name" class="form-control" />
+                           
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="" class="form-label">وصف  المنتج</label>
+                            <input type="text" id="Description" name="Description" class="form-control" />
+                          
+                        </div>
+
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col text-center">
+                            <button class="btn btn-success">حفظ</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لا</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+           
+
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" id="conform">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تأكيد </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>هل ترعب في تأكيد الحذف.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لا</button>
+                <button type="button" onclick="confirm()" data-bs-dismiss="modal" class="btn btn-primary">نعم</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" id="newproducts">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> إضافة منتج جديد </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Create" method="post">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="" class="form-label">اسم المنتج</label>
+                            <input type="text" asp-for="Name" class="form-control" required/>
+                            <span class="text-danger" asp-validation-for="Name"></span>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="" class="form-label">وصف  المنتج</label>
+                            <input type="text" asp-for="Description" class="form-control" required/>
+                            <span class="text-danger" asp-validation-for="Description"></span>
+                        </div>
+
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col text-center">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء الأمر </button>
+                            <button type="submit" class="btn btn-primary" >حفظ</button>
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+
+        </div>
+    </div>
+</div>
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+  
 
     <div class="container">
         <div class="row">
@@ -14,26 +102,12 @@
                 <div class="card">
                     <div class="card-body">
                         <h3 class="alert alert-success text-center">إنشاء منتج جديد </h3>
-                        <form asp-action="Create" method="get">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label for="" class="form-label">اسم المنتج</label>
-                                    <input type="text" asp-for="Name" class="form-control" />
-                                    <span class="text-danger" asp-validation-for="Name"></span>
-                                </div>
-                                <div class="col-sm-6">
-                                    <label for="" class="form-label">وصف  المنتج</label>
-                                    <input type="text" asp-for="Description" class="form-control" />
-                                    <span class="text-danger" asp-validation-for="Description"></span>
-                                </div>
-
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-success" onclick="AddNewItems()">  <i class="fs-4 bi-cart-plus p-2"></i> أضافة منتج </button>
                             </div>
-                            <div class="row mt-4">
-                                <div class="col text-center">
-                                    <button class="btn btn-success">حفظ</button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
+                        
                         @if(TempData["add"] != null)
                         {
                             if(TempData["add"].ToString()=="True")
@@ -55,8 +129,8 @@
         <div class="card">
 
             <div class="card-body">
-                <table class="table  table-bordered text-center table-success">
-                    <thead>
+                <table class="table  table-bordered text-center">
+                    <thead class="table-info">
                         <tr>
                         <th>
                             رقم المنتج
@@ -81,8 +155,12 @@
                                 <td> @items.Id </td>
                                 <td> @items.Name </td>
                                 <td> @items.Description </td>
-                                <td><a asp-action="Delete" asp-route-product="@items.Id"> <i class="bi bi-archive-fill "></i> </a></td>
-                                <td><a asp-action="Edit" asp-route-product="@items.Id"><i class=" bi bi-pencil-fill"></i> </a></td>
+                              @*   <td><a asp-action="Delete" asp-route-product="@items.Id"> <i class="bi bi-archive-fill "></i> </a></td>
+                                <td><a asp-action="Edit" asp-route-product="@items.Id"><i class=" bi bi-pencil-fill"></i> </a></td> *@
+
+                                <td><a onclick='delMassage(@items.Id)'> <i class="bi bi-archive-fill "></i> </a></td>
+                                <td><a onclick='update1(@items.Id)'> <i class="bi bi-pencil-fill "></i> </a></td>
+                              
                             </tr>
                         }
                     </tbody>
@@ -91,11 +169,11 @@
                     <div class="col">
                         @if (TempData["del"] != null && Convert.ToBoolean(TempData["del"]))
                         {
-                            <h1> deleted </h1>
+                            <h3> deleted </h3>
                         }
                         else
                         {
-                            <h1>not deleted</h1>
+                            <h3>not deleted</h3>
                         }
 
                     </div>
